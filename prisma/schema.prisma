@@ -11,3 +11,68 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(USER)
+  bookings  Booking[]
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Car {
+  id          String   @id @default(cuid())
+  brand       String
+  model       String
+  year        Int
+  category    Category
+  pricePerDay Float
+  image       String
+  description String
+  available   Boolean  @default(true)
+  bookings    Booking[]
+  createdAt   DateTime @default(now())
+}
+
+enum Category {
+  SEDAN
+  SUV
+  SPORTS
+  ELECTRIC
+  LUXURY
+}
+
+model Booking {
+  id         String        @id @default(cuid())
+  userId     String
+  carId      String
+  startDate  DateTime
+  endDate    DateTime
+  totalPrice Float
+  status     BookingStatus  @default(PENDING)
+  user       User          @relation(fields: [userId], references: [id])
+  car        Car           @relation(fields: [carId], references: [id])
+  createdAt  DateTime      @default(now())
+}
+
+enum BookingStatus {
+  PENDINGх
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String
+  createdAt DateTime @default(now())
+}
