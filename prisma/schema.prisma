@@ -63,7 +63,7 @@ model Booking {
 }
 
 enum BookingStatus {
-  PENDINGх
+  PENDING
   CONFIRMED
   CANCELLED
   COMPLETED
