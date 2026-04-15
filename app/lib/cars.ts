@@ -7,3 +7,7 @@ export async function getCars() {
 export async function getCarById(id: string) {
   return await prisma.car.findUnique({ where: {id}})
 }
+
+export async function getCarsByCategory(category: string) {
+  return await prisma.car.findMany( {where: {category: category as any}})
+}

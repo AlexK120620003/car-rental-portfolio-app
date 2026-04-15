@@ -96,7 +96,7 @@ async function main() { // then we wrote a async function for inserting data
       pricePerDay: 60,
       image: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800",
       description: "Reliable and fuel-efficient daily sedan",
-      available: true,
+      available: false,
     },
     {
       brand: "Ford",
@@ -105,7 +105,7 @@ async function main() { // then we wrote a async function for inserting data
       category: "SPORTS",
       pricePerDay: 120,
       image: "https://images.unsplash.com/photo-1584345604476-8ec5f452d1f2?w=800",
-      description: "Classic American muscle car with мощный двигатель",
+      description: "Classic American muscle car with strong engine",
       available: true,
     },
     {
