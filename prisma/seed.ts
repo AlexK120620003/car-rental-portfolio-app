@@ -7,7 +7,6 @@ import { PrismaPg } from "@prisma/adapter-pg";
 const connectionString = process.env.POSTGRES_PRISMA_URL!;
 const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
- // then we created a value prisma and we said this is new PrismaClient
 
 async function main() { // then we wrote a async function for inserting data
   await prisma.booking.deleteMany()
