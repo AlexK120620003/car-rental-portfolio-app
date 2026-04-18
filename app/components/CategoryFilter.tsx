@@ -1,55 +1,44 @@
-"use client"
-
-import { useRouter, usePathname } from "next/navigation"
-import { Category } from "../lib/types"
+'use client';
+import { useRouter, usePathname } from 'next/navigation';
+import { Category } from '../lib/types';
 
 interface CategoryFilterProps {
-  activeCategory?: Category
+  activeCategory?: Category;
 }
 
-const categories: Array<{value: Category | null; label: string}> = [
-  { value: null, label: "All" },
-  { value: "SEDAN", label: "Sedan" },
-  { value: "SUV", label: "SUV" },
-  { value: "SPORTS", label: "Sports" },
-  { value: "ELECTRIC", label: "Electric" },
-  { value: "LUXURY", label: "Luxury" },
-]
+export default function CategoryFilter({
+  activeCategory,
+}: CategoryFilterProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const categories = Object.values(Category);
 
-export default function CategoryFilter ({activeCategory}: CategoryFilterProps) {
-  const router = useRouter()
-  const pathname = usePathname()
+  function handleClick(category: Category | null) {
+    const params = new URLSearchParams();
 
-  function handleClick(category:Category | null) {
-    if (category === null){
-      router.push(pathname)
-      return
+    if (!category || category === activeCategory) {
+      params.delete('category');
+    } else {
+      params.set('category', category);
     }
-    const params = new URLSearchParams()
-    params.set("category", category)
-    router.push(`${pathname}?${params.toString()}`)
+    router.replace(`${pathname}?${params.toString()}`);
   }
 
-    return (
-    <div className="flex flex-wrap gap-3">
-      {categories.map((cat) => {
-        const isActive =
-          cat.value === null ? !activeCategory : activeCategory === cat.value;
-
-        return (
-          <button
-            key={cat.label}
-            onClick={() => handleClick(cat.value)}
-            className={
-              isActive
-                ? "rounded-full bg-accent px-5 py-2 text-sm font-medium text-white transition-colors"
-                : "rounded-full border border-border bg-surface px-5 py-2 text-sm font-medium text-muted transition-colors hover:border-accent hover:text-foreground"
-            }
-          >
-            {cat.label}
-          </button>
-        );
-      })}
+  return (
+    <div className='flex gap-2 flex-wrap'>
+      {categories.map(category => (
+        <button
+          key={category}
+          onClick={() => handleClick(category)}
+          className={`px-4 py-2 rounded-full border transition-colors ${
+            category === activeCategory
+              ? 'bg-black text-white'
+              : 'bg-white text-black hover:bg-gray-100'
+          }`}
+        >
+          {category}
+        </button>
+      ))}
     </div>
   );
 }
