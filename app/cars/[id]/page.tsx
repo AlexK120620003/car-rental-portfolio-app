@@ -1,8 +1,27 @@
 import { getCarById } from '@/app/lib/cars';
 import { notFound } from 'next/navigation';
 import BookingCalculator from '@/app/components/BookingCalculator';
+import Image from 'next/image';
+import type { Metadata } from 'next';
+
 interface СarPageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: СarPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const car = await getCarById(id);
+
+  if (!car) {
+    return { title: 'Car not found' };
+  }
+
+  return {
+    title: `${car.brand} ${car.model} - Rentola`,
+    description: car.description,
+  };
 }
 
 export default async function CarPage({ params }: СarPageProps) {
@@ -18,11 +37,14 @@ export default async function CarPage({ params }: СarPageProps) {
       <div className='mx-auto max-w-7xl px-6'>
         <div className='grid gap-12 lg:grid-cols-2'>
           {/* Car image */}
-          <div className='overflow-hidden rounded-2xl'>
-            <img
+          <div className='relative aspect-[16/10] w-full overflow-hidden bg-background'>
+            <Image
               src={car.image}
               alt={`${car.brand} ${car.model}`}
-              className='h-full w-full object-cover'
+              fill
+              priority
+              sizes='(min-width: 1024px) 50vw, 100vw'
+              className='object-cover'
             />
           </div>
 

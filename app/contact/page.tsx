@@ -1,4 +1,10 @@
 import { submitContact } from '@/app/lib/actions';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Contact-Us - Rentola',
+  description: 'Contact us for any problems',
+};
 
 export default function ContactPage() {
   return (

@@ -1,3 +1,9 @@
+import type { Metadata } from 'next';
+export const metadata: Metadata = {
+  title: 'About - Rentola',
+  description: 'Learn more about our fleet',
+};
+
 export default function AboutPage() {
   return (
     <section className='bg-background py-16'>
