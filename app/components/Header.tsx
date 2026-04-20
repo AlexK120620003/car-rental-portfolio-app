@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useSession, signOut } from 'next-auth/react';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -12,8 +13,8 @@ const navLinks = [
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
-
   const closeMenu = () => setIsOpen(false);
+  const { data: session } = useSession();
 
   return (
     <header className='bg-surface border-b border-border'>
@@ -39,18 +40,32 @@ export default function Header() {
         </div>
 
         <div className='hidden items-center gap-3 md:flex'>
-          <Link
-            href='/login'
-            className='rounded-full border border-accent px-5 py-2 text-sm text-accent transition-colors hover:bg-accent hover:text-white'
-          >
-            Login
-          </Link>
-          <Link
-            href='/register'
-            className='rounded-full bg-accent px-5 py-2 text-sm text-white transition-colors hover:opacity-90'
-          >
-            Sign Up
-          </Link>
+          {session ? (
+            <>
+              <span className='text-sm text-muted'>{session.user?.name}</span>
+              <button
+                onClick={() => signOut()}
+                className='rounded-full border border-accent px-5 py-2 text-sm text-accent transition-colors hover:bg-accent hover:text-white'
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href='/login'
+                className='rounded-full border border-accent px-5 py-2 text-sm text-accent transition-colors hover:bg-accent hover:text-white'
+              >
+                Login
+              </Link>
+              <Link
+                href='/register'
+                className='rounded-full bg-accent px-5 py-2 text-sm text-white transition-colors hover:opacity-90'
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
 
         <button
@@ -106,21 +121,37 @@ export default function Header() {
               </Link>
             ))}
 
-            <Link
-              href='/login'
-              onClick={closeMenu}
-              className='mt-2 inline-flex justify-center rounded-full border border-accent px-5 py-2 text-sm text-accent transition-colors hover:bg-accent hover:text-white'
-            >
-              Login
-            </Link>
-
-            <Link
-              href='/register'
-              onClick={closeMenu}
-              className='inline-flex justify-center rounded-full bg-accent px-5 py-2 text-sm text-white transition-colors hover:opacity-90'
-            >
-              Sign Up
-            </Link>
+            {session ? (
+              <>
+                <span className='text-sm text-muted'>{session.user?.name}</span>
+                <button
+                  onClick={() => {
+                    signOut();
+                    closeMenu();
+                  }}
+                  className='mt-2 inline-flex justify-center rounded-full border border-accent px-5 py-2 text-sm text-accent transition-colors hover:bg-accent hover:text-white'
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href='/login'
+                  onClick={closeMenu}
+                  className='mt-2 inline-flex justify-center rounded-full border border-accent px-5 py-2 text-sm text-accent transition-colors hover:bg-accent hover:text-white'
+                >
+                  Login
+                </Link>
+                <Link
+                  href='/register'
+                  onClick={closeMenu}
+                  className='inline-flex justify-center rounded-full bg-accent px-5 py-2 text-sm text-white transition-colors hover:opacity-90'
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

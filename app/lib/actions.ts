@@ -14,12 +14,17 @@ export async function submitContact(formData: FormData) {
   });
 }
 export async function login(formData: FormData) {
-  await signIn('credentials', {
-    email: formData.get('email'),
-    password: formData.get('password'),
-    redirectTo: '/dashboard',
-  });
+  try {
+    await signIn('credentials', {
+      email: formData.get('email'),
+      password: formData.get('password'),
+      redirectTo: '/dashboard',
+    });
+  } catch (error) {
+    throw error;
+  }
 }
+
 export async function register(formData: FormData) {
   const name = formData.get('name') as string;
   const email = formData.get('email') as string;

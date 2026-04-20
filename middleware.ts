@@ -1,8 +1,5 @@
-import NextAuth from 'next-auth';
-import { authConfig } from './auth.config';
-
-export default NextAuth(authConfig).auth;
+export default function middleware() {}
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/admin/:path*'],
+  matcher: [],
 };

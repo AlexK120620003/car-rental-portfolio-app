@@ -24,11 +24,10 @@ async function main() {
       role: 'ADMIN',
     },
   });
-
   const user = await prisma.user.create({
     data: {
       email: 'user@test.com',
-      password: 'user123',
+      password: await bcrypt.hash('user123', 10),
       name: 'John Doe',
       role: 'USER',
     },
