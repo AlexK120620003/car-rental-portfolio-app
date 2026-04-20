@@ -38,12 +38,20 @@ export default function Header() {
           ))}
         </div>
 
-        <Link
-          href='/login'
-          className='hidden rounded-full border border-accent px-5 py-2 text-sm text-accent transition-colors hover:bg-accent hover:text-white md:inline-flex'
-        >
-          Login
-        </Link>
+        <div className='hidden items-center gap-3 md:flex'>
+          <Link
+            href='/login'
+            className='rounded-full border border-accent px-5 py-2 text-sm text-accent transition-colors hover:bg-accent hover:text-white'
+          >
+            Login
+          </Link>
+          <Link
+            href='/register'
+            className='rounded-full bg-accent px-5 py-2 text-sm text-white transition-colors hover:opacity-90'
+          >
+            Sign Up
+          </Link>
+        </div>
 
         <button
           type='button'
@@ -104,6 +112,14 @@ export default function Header() {
               className='mt-2 inline-flex justify-center rounded-full border border-accent px-5 py-2 text-sm text-accent transition-colors hover:bg-accent hover:text-white'
             >
               Login
+            </Link>
+
+            <Link
+              href='/register'
+              onClick={closeMenu}
+              className='inline-flex justify-center rounded-full bg-accent px-5 py-2 text-sm text-white transition-colors hover:opacity-90'
+            >
+              Sign Up
             </Link>
           </div>
         </div>
