@@ -1,11 +1,14 @@
 'use client';
 import { useState } from 'react';
+import { createBooking } from '../lib/actions';
 interface BookingCalculatorProps {
   pricePerDay: number;
+  carId: string;
 }
 
 export default function BookingCalculator({
   pricePerDay,
+  carId,
 }: BookingCalculatorProps) {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -58,12 +61,18 @@ export default function BookingCalculator({
           </div>
         )}
 
-        <button
-          disabled={days <= 0}
-          className='w-full rounded-lg bg-accent py-3 font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50'
-        >
-          Book Now
-        </button>
+        <form action={createBooking}>
+          <input type='hidden' name='id' value={carId} />
+          <input type='hidden' name='startDate' value={startDate} />
+          <input type='hidden' name='endDate' value={endDate} />
+          <input type='hidden' name='totalPrice' value={totalPrice} />
+          <button
+            disabled={days <= 0}
+            className='w-full rounded-lg bg-accent py-3 font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50'
+          >
+            Book Now
+          </button>
+        </form>
       </div>
     </div>
   );

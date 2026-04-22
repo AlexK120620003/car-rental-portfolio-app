@@ -2,7 +2,9 @@
 import prisma from './prisma';
 import { auth, signIn } from '@/auth';
 import bcrypt from 'bcryptjs';
+import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { Prisma } from '../generated/prisma/client';
 
 export async function submitContact(formData: FormData) {
   const name = formData.get('name') as string;
@@ -55,4 +57,54 @@ export async function createBooking(formData: FormData) {
     },
   });
   redirect('/dashboard/bookings');
+}
+
+export async function cancelBooking(formData: FormData) {
+  const bookingId = formData.get('bookingId') as string;
+
+  if (!bookingId) {
+    throw new Error('Booking id is required');
+  }
+
+  await prisma.booking.update({
+    where: { id: bookingId },
+    data: { status: 'CANCELLED' },
+  });
+
+  revalidatePath('/dashboard/bookings');
+}
+
+export async function updateUserName(formData: FormData) {
+  const name = formData.get('name') as string;
+  const session = await auth();
+  if (!session) redirect('/login');
+  await prisma.user.update({
+    where: { id: session?.user?.id },
+    data: { name },
+  });
+  revalidatePath('/dashboard/profile');
+}
+
+export async function updatePassword(formData: FormData) {
+  const currentPassword = formData.get('currentPassword') as string;
+  const newPassword = formData.get('newPassword') as string;
+
+  const session = await auth();
+  if (!session) redirect('/login');
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user?.id },
+  });
+  if (!user) redirect('/login');
+
+  const isValid = await bcrypt.compare(currentPassword, user.password);
+  if (!isValid) throw new Error(`Current password is incorrect`);
+
+  const hashed = await bcrypt.hash(newPassword, 10);
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { password: hashed },
+  });
+
+  revalidatePath('/dashboard/profile');
 }

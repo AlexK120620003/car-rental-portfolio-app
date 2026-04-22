@@ -1,8 +1,10 @@
 'use client';
 import { useState } from 'react';
+import { createBooking } from '../lib/actions';
 
-interface BookingCalculator {
+interface BookingCalculatorProps {
   pricePerDay: number;
+  carId: string;
 }
 
 function getDaysInMonth(date: Date): (Date | null)[] {
@@ -24,7 +26,10 @@ function getDaysInMonth(date: Date): (Date | null)[] {
   return day;
 }
 
-export default function BookingCalculator({ pricePerDay }: BookingCalculator) {
+export default function BookingCalculator({
+  pricePerDay,
+  carId,
+}: BookingCalculatorProps) {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(
     new Date(today.getFullYear(), today.getMonth())
@@ -145,12 +150,26 @@ export default function BookingCalculator({ pricePerDay }: BookingCalculator) {
         </div>
       )}
 
-      <button
-        disabled={totalDays <= 0}
-        className='mt-4 w-full rounded-lg bg-accent py-3 font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50'
-      >
-        Book Now
-      </button>
+      <form action={createBooking} className='mt-4'>
+        <input type='hidden' name='id' value={carId} />
+        <input
+          type='hidden'
+          name='startDate'
+          value={startDate?.toISOString() ?? ''}
+        />
+        <input
+          type='hidden'
+          name='endDate'
+          value={endDate?.toISOString() ?? ''}
+        />
+        <input type='hidden' name='totalPrice' value={totalPrice} />
+        <button
+          disabled={totalDays <= 0}
+          className='w-full rounded-lg bg-accent py-3 font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50'
+        >
+          Book Now
+        </button>
+      </form>
     </div>
   );
 }
