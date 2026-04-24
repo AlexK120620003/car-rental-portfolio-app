@@ -4,7 +4,7 @@ import { auth, signIn } from '@/auth';
 import bcrypt from 'bcryptjs';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { Prisma } from '../generated/prisma/client';
+import { BookingStatus, Category } from '../generated/prisma/client';
 
 export async function submitContact(formData: FormData) {
   const name = formData.get('name') as string;
@@ -107,4 +107,55 @@ export async function updatePassword(formData: FormData) {
   });
 
   revalidatePath('/dashboard/profile');
+}
+
+export async function deleteCar(formData: FormData) {
+  const id = formData.get('id') as string;
+  await prisma.car.delete({ where: { id } });
+  revalidatePath('/admin/cars');
+}
+
+export async function createCar(formData: FormData) {
+  const brand = formData.get('brand') as string;
+  const model = formData.get('model') as string;
+  const year = Number(formData.get('year') as string);
+  const category = formData.get('category') as Category;
+  const pricePerDay = Number(formData.get('pricePerDay') as string);
+  const image = formData.get('image') as string;
+  const description = formData.get('description') as string;
+
+  await prisma.car.create({
+    data: { brand, model, year, pricePerDay, category, image, description },
+  });
+  redirect('/admin/cars');
+}
+
+export async function updateCar(formData: FormData) {
+  const id = formData.get('id') as string;
+  const brand = formData.get('brand') as string;
+  const model = formData.get('model') as string;
+  const year = Number(formData.get('year') as string);
+  const category = formData.get('category') as Category;
+  const pricePerDay = Number(formData.get('pricePerDay') as string);
+  const image = formData.get('image') as string;
+  const description = formData.get('description') as string;
+  await prisma.car.update({
+    where: { id },
+    data: { brand, model, year, pricePerDay, category, image, description },
+  });
+  revalidatePath('/admin/cars');
+  redirect('/admin/cars');
+}
+
+export async function updateBookingStatus(formData: FormData) {
+  const id = formData.get('id') as string;
+  const status = formData.get('status') as string;
+  const allowed = ['PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED'];
+  if (!id || !allowed.includes(status)) throw new Error('Invalid input');
+
+  await prisma.booking.update({
+    where: { id },
+    data: { status: status as BookingStatus },
+  });
+  revalidatePath('/admin/bookings');
 }

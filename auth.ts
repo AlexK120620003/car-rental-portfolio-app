@@ -1,3 +1,15 @@
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      id: string;
+      role: string;
+    };
+  }
+  interface User {
+    role: string;
+  }
+}
+
 import NextAuth from 'next-auth';
 import bcrypt from 'bcryptjs';
 import prisma from './app/lib/prisma';
@@ -22,12 +34,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.role = user.role;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user && token.id) {
         session.user.id = token.id as string;
+        session.user.role = token.role as string;
       }
       return session;
     },
