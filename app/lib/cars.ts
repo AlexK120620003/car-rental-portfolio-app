@@ -2,16 +2,28 @@ import prisma from "./prisma";
 import type { Category } from "./types";
 
 export async function getCars(category?: Category) {
-  return await prisma.car.findMany({
-    where: category ? {category} :undefined,
-    orderBy: {createdAt: 'desc'}
-  });
+  try {
+    return await prisma.car.findMany({
+      where: category ? { category } : undefined,
+      orderBy: { createdAt: 'desc' },
+    });
+  } catch {
+    return [];
+  }
 }
 
 export async function getCarById(id: string) {
-  return await prisma.car.findUnique({ where: { id } });
+  try {
+    return await prisma.car.findUnique({ where: { id } });
+  } catch {
+    return null;
+  }
 }
 
 export async function getCarsByCategory(category: Category) {
-  return await prisma.car.findMany({ where: { category } });
+  try {
+    return await prisma.car.findMany({ where: { category } });
+  } catch {
+    return [];
+  }
 }

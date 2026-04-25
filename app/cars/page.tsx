@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import Image from 'next/image';
 import { getCars } from '../lib/cars';
 import CatalogClient from '../components/CatalogClient';

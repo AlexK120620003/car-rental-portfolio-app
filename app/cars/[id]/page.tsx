@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { getCarById } from '@/app/lib/cars';
 import { notFound } from 'next/navigation';
 import BookingCalculator from '@/app/components/BookingCalculator';
