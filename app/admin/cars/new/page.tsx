@@ -8,52 +8,63 @@ export default async function CreateCar() {
   if (session.user.role !== 'ADMIN') redirect('/dashboard');
   return (
     <div className='max-w-lg'>
-      <h1 className='mb-8 text-2xl font-bold text-white'>Add Car</h1>
+      <h1 className='mb-2 text-2xl font-extrabold text-foreground'>Add Car</h1>
+      <p className='mb-8 text-sm text-muted'>
+        Fill in the details for the new vehicle
+      </p>
       <form
         action={createCar}
-        className='space-y-4 rounded-xl border border-zinc-800 bg-zinc-900 p-6'
+        className='space-y-4 rounded-2xl border border-border bg-surface p-6'
       >
         <div>
-          <label className='mb-1 block text-sm text-zinc-400'>Brand</label>
+          <label className='mb-1 block text-sm font-medium text-muted'>
+            Brand
+          </label>
           <input
             type='text'
             name='brand'
-            className='w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm text-white focus:border-orange-500 focus:outline-none'
+            className='w-full rounded-xl border border-border bg-surface-alt px-4 py-2.5 text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none'
           />
         </div>
         <div>
-          <label className='mb-1 block text-sm text-zinc-400'>Model</label>
+          <label className='mb-1 block text-sm font-medium text-muted'>
+            Model
+          </label>
           <input
             type='text'
             name='model'
-            className='w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm text-white focus:border-orange-500 focus:outline-none'
+            className='w-full rounded-xl border border-border bg-surface-alt px-4 py-2.5 text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none'
           />
         </div>
         <div className='grid grid-cols-2 gap-4'>
           <div>
-            <label className='mb-1 block text-sm text-zinc-400'>Year</label>
+            <label className='mb-1 block text-sm font-medium text-muted'>
+              Year
+            </label>
             <input
               type='number'
               name='year'
-              className='w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm text-white focus:border-orange-500 focus:outline-none'
+              className='w-full rounded-xl border border-border bg-surface-alt px-4 py-2.5 text-sm text-foreground focus:border-accent focus:outline-none'
             />
           </div>
           <div>
-            <label className='mb-1 block text-sm text-zinc-400'>
+            <label className='mb-1 block text-sm font-medium text-muted'>
               Price/day
             </label>
             <input
               type='number'
               name='pricePerDay'
-              className='w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm text-white focus:border-orange-500 focus:outline-none'
+              className='w-full rounded-xl border border-border bg-surface-alt px-4 py-2.5 text-sm text-foreground focus:border-accent focus:outline-none'
             />
           </div>
         </div>
         <div>
-          <label className='mb-1 block text-sm text-zinc-400'>Category</label>
+          <label className='mb-1 block text-sm font-medium text-muted'>
+            Category
+          </label>
           <select
             name='category'
-            className='w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm text-white focus:border-orange-500 focus:outline-none'
+            className='w-full rounded-xl border border-border bg-surface-alt px-4 py-2.5 text-sm text-foreground focus:border-accent focus:outline-none'
           >
             <option value='SEDAN'>Sedan</option>
             <option value='SUV'>SUV</option>
@@ -63,26 +74,29 @@ export default async function CreateCar() {
           </select>
         </div>
         <div>
-          <label className='mb-1 block text-sm text-zinc-400'>Image URL</label>
-          <input
-            type='text'
-            name='image'
-            className='w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm text-white focus:border-orange-500 focus:outline-none'
-          />
-        </div>
-        <div>
-          <label className='mb-1 block text-sm text-zinc-400'>
-            Description
+          <label className='mb-1 block text-sm font-medium text-muted'>
+            Image URL
           </label>
           <input
             type='text'
+            name='image'
+            placeholder='https://...'
+            className='w-full rounded-xl border border-border bg-surface-alt px-4 py-2.5 text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none'
+          />
+        </div>
+        <div>
+          <label className='mb-1 block text-sm font-medium text-muted'>
+            Description
+          </label>
+          <textarea
             name='description'
-            className='w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm text-white focus:border-orange-500 focus:outline-none'
+            rows={3}
+            className='w-full resize-none rounded-xl border border-border bg-surface-alt px-4 py-2.5 text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none'
           />
         </div>
         <button
           type='submit'
-          className='w-full rounded-lg bg-orange-500 py-2 text-sm font-medium text-white hover:bg-orange-600'
+          className='w-full rounded-xl bg-accent py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90'
         >
           Create Car
         </button>

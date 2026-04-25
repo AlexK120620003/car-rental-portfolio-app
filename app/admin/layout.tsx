@@ -2,6 +2,7 @@ import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import React, { ReactNode } from 'react';
+import AdminNav from './AdminNav';
 
 export default async function AdminLayout({
   children,
@@ -9,34 +10,35 @@ export default async function AdminLayout({
   const session = await auth();
   if (!session) redirect('/login');
   if (session.user.role !== 'ADMIN') redirect('/dashboard');
+
   return (
-    <div className='flex min-h-screen bg-zinc-950'>
-      <aside className='w-56 border-r border-zinc-800 bg-zinc-900 p-6'>
-        <p className='mb-6 text-xs font-semibold uppercase tracking-wider text-zinc-400'>
+    <div className='flex min-h-screen bg-background'>
+      <aside className='w-56 shrink-0 border-r border-border bg-surface flex flex-col py-6 px-3'>
+        <div className='px-3 mb-1'>
+          <Link href='/' className='text-lg font-extrabold text-accent'>
+            Rentola
+          </Link>
+        </div>
+        <p className='px-3 mb-6 text-xs font-bold uppercase tracking-widest text-muted'>
           Admin Panel
         </p>
-        <nav className='space-y-1'>
-          <Link
-            href='/admin'
-            className='block rounded-lg px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white'
-          >
-            Overview
-          </Link>
-          <Link
-            href='/admin/cars'
-            className='block rounded-lg px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white'
-          >
-            Cars
-          </Link>
-          <Link
-            href='/admin/bookings'
-            className='block rounded-lg px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white'
-          >
-            Bookings
-          </Link>
+
+        <nav className='flex flex-col gap-1'>
+          <AdminNav />
         </nav>
+
+        <div className='mt-auto border-t border-border pt-4 px-3 flex items-center gap-3'>
+          <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent text-xs font-bold text-white'>
+            AD
+          </div>
+          <div className='min-w-0 flex-1'>
+            <p className='text-xs font-semibold text-foreground'>Admin</p>
+            <p className='truncate text-xs text-muted'>{session.user?.email}</p>
+          </div>
+        </div>
       </aside>
-      <main className='flex-1 p-8'>{children}</main>
+
+      <main className='flex-1 overflow-y-auto p-8'>{children}</main>
     </div>
   );
 }

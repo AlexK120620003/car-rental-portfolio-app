@@ -16,12 +16,18 @@ export async function submitContact(formData: FormData) {
   });
 }
 export async function login(formData: FormData) {
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
+
+  // Determine redirect based on role
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { role: true },
+  });
+  const redirectTo = user?.role === 'ADMIN' ? '/admin' : '/dashboard';
+
   try {
-    await signIn('credentials', {
-      email: formData.get('email'),
-      password: formData.get('password'),
-      redirectTo: '/dashboard',
-    });
+    await signIn('credentials', { email, password, redirectTo });
   } catch (error) {
     throw error;
   }
@@ -83,6 +89,7 @@ export async function updateUserName(formData: FormData) {
     data: { name },
   });
   revalidatePath('/dashboard/profile');
+  revalidatePath('/admin/profile');
 }
 
 export async function updatePassword(formData: FormData) {
@@ -107,6 +114,7 @@ export async function updatePassword(formData: FormData) {
   });
 
   revalidatePath('/dashboard/profile');
+  revalidatePath('/admin/profile');
 }
 
 export async function deleteCar(formData: FormData) {

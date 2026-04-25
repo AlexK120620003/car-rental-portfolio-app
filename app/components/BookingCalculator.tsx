@@ -1,154 +1,73 @@
 'use client';
 import { useState } from 'react';
-import { createBooking } from '../lib/actions';
-import {
-  getDaysInMonth,
-  calculateTotalDays,
-  calculateTotalPrice,
-} from '../lib/unit';
+import BookingModal from './BookingModal';
+
 interface BookingCalculatorProps {
   pricePerDay: number;
   carId: string;
+  carBrand: string;
+  carModel: string;
+  carImage: string;
 }
 
 export default function BookingCalculator({
   pricePerDay,
   carId,
+  carBrand,
+  carModel,
+  carImage,
 }: BookingCalculatorProps) {
-  const today = new Date();
-  const [currentMonth, setCurrentMonth] = useState(
-    new Date(today.getFullYear(), today.getMonth())
-  );
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
-  const [hoverDate, setHoverDate] = useState<Date | null>(null);
-  const days = getDaysInMonth(currentMonth);
-  const totalDays = calculateTotalDays(startDate, endDate);
-  const totalPrice = calculateTotalPrice(totalDays, pricePerDay);
-
-  function handleDateClick(day: Date) {
-    if (!startDate || (startDate && endDate)) {
-      setStartDate(day);
-      setEndDate(null);
-    } else if (day > startDate) {
-      setEndDate(day);
-    } else {
-      setStartDate(day);
-      setEndDate(null);
-    }
-  }
-
-  function isSameDay(a: Date | null, b: Date | null): boolean {
-    if (!a || !b) return false;
-    return a.toDateString() === b.toDateString();
-  }
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
-    <div className='mt-8 rounded-2xl border border-muted/20 bg-card p-6'>
-      <h3 className='mb-4 text-lg font-semibold text-foreground'>
-        Book This Car
-      </h3>
+    <>
+      <div className='mt-8 rounded-2xl border border-border bg-card p-6'>
+        <h3 className='mb-2 text-lg font-semibold text-foreground'>Book This Car</h3>
+        <p className='mb-5 text-sm text-muted'>
+          Choose your pick-up and return dates, select a time, and confirm in seconds.
+        </p>
 
-      {/* Month navigation */}
-      <div className='mb-4 flex items-center justify-between'>
-        <button
-          onClick={() =>
-            setCurrentMonth(
-              new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1)
-            )
-          }
-          className='rounded-lg px-3 py-1 text-muted hover:text-foreground'
-        >
-          &lt;
-        </button>
-        <span className='font-medium text-foreground'>
-          {currentMonth.toLocaleString('en-US', {
-            month: 'long',
-            year: 'numeric',
-          })}
-        </span>
-        <button
-          onClick={() =>
-            setCurrentMonth(
-              new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1)
-            )
-          }
-          className='rounded-lg px-3 py-1 text-muted hover:text-foreground'
-        >
-          &gt;
-        </button>
-      </div>
-
-      {/* Day headers */}
-      <div className='mb-2 grid grid-cols-7 text-center text-xs text-muted'>
-        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
-          <span key={d}>{d}</span>
-        ))}
-      </div>
-
-      <div className='grid grid-cols-7 gap-1'>
-        {days.map((day, index) => {
-          if (day === null) return <div key={index} />;
-
-          const isStart = isSameDay(day, startDate);
-          const isEnd = isSameDay(day, endDate);
-
-          const rangeEnd = endDate ?? (startDate ? hoverDate : null);
-
-          const isInRange =
-            startDate && rangeEnd ? day > startDate && day < rangeEnd : false;
-
-          return (
-            <button
-              key={index}
-              className={`rounded-lg py-2 text-sm ${
-                isStart || isEnd
-                  ? 'bg-accent text-white'
-                  : isInRange
-                    ? 'bg-accent/20 text-foreground'
-                    : 'text-muted hover:bg-muted/10'
-              }`}
-              onClick={() => handleDateClick(day)}
-              onMouseEnter={() => setHoverDate(day)}
-              onMouseLeave={() => setHoverDate(null)}
-            >
-              {day.getDate()}
-            </button>
-          );
-        })}
-      </div>
-
-      {totalDays > 0 && (
-        <div className='mt-4 rounded-lg bg-background p-4'>
-          <div className='flex justify-between text-sm text-muted'>
-            <span>
-              ${pricePerDay} × {totalDays} days
-            </span>
-            <span className='text-lg font-bold text-accent'>${totalPrice}</span>
-          </div>
+        <div className='mb-5 flex flex-col gap-3 text-sm text-muted'>
+          {[
+            { icon: '📍', text: 'City center & airport pick-up' },
+            { icon: '❌', text: 'Free cancellation 24h before' },
+            { icon: '💳', text: 'No hidden fees — transparent pricing' },
+          ].map(({ icon, text }) => (
+            <div key={text} className='flex items-center gap-2'>
+              <span>{icon}</span>
+              <span>{text}</span>
+            </div>
+          ))}
         </div>
-      )}
 
-      <form action={createBooking} className='mt-4'>
-        <input type='hidden' name='id' value={carId} />
-        <input
-          type='hidden'
-          name='startDate'
-          value={startDate?.toISOString() ?? ''}
-        />
-        <input
-          type='hidden'
-          name='endDate'
-          value={endDate?.toISOString() ?? ''}
-        />
-        <input type='hidden' name='totalPrice' value={totalPrice} />
+        <div className='flex items-baseline gap-2 mb-5'>
+          <span className='text-2xl font-bold text-accent'>${pricePerDay}</span>
+          <span className='text-sm text-muted'>/ day</span>
+        </div>
+
         <button
-          disabled={totalDays <= 0}
-          className='w-full rounded-lg bg-accent py-3 font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50'
+          onClick={() => setModalOpen(true)}
+          className='flex w-full items-center justify-center gap-2 rounded-xl bg-accent py-3.5 text-sm font-bold text-white transition-all hover:bg-accent-hover'
         >
-          Book Now
+          <svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round'>
+            <rect x='3' y='4' width='18' height='18' rx='2' />
+            <line x1='16' y1='2' x2='16' y2='6' />
+            <line x1='8' y1='2' x2='8' y2='6' />
+            <line x1='3' y1='10' x2='21' y2='10' />
+          </svg>
+          Select Dates & Book
         </button>
-      </form>
-    </div>
+      </div>
+
+      <BookingModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        pricePerDay={pricePerDay}
+        carId={carId}
+        carBrand={carBrand}
+        carModel={carModel}
+        carImage={carImage}
+      />
+    </>
   );
 }

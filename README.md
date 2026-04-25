@@ -1,36 +1,142 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Rentola — Premium Car Rental App
+
+A full-stack car rental web application built with **Next.js 16**, **Prisma**, **NextAuth.js**, and **Tailwind CSS v4**.
+
+---
+
+## Navigation
+
+- [Getting Started](#getting-started)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Features](#features)
+- [Environment Variables](#environment-variables)
+- [Database Setup](#database-setup)
+- [Running Tests](#running-tests)
+- [Deployment](#deployment)
+
+---
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# Install dependencies
+pnpm install
+
+# Set up the database (run migrations + seed)
+pnpm prisma migrate deploy
+pnpm prisma db seed
+
+# Start the development server
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Tech Stack
 
-## Learn More
+| Layer        | Technology                              |
+|--------------|-----------------------------------------|
+| Framework    | Next.js 16 (App Router)                 |
+| Language     | TypeScript                              |
+| Styling      | Tailwind CSS v4                         |
+| Database     | PostgreSQL via Prisma ORM               |
+| Auth         | NextAuth.js v5 (credentials provider)  |
+| Testing      | Vitest + Testing Library                |
+| Deployment   | Vercel                                  |
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+rentola-app/
+├── app/
+│   ├── components/        # Shared UI components
+│   ├── lib/               # Server actions, DB queries, utilities
+│   ├── admin/             # Admin panel (cars, bookings, profile)
+│   ├── dashboard/         # User dashboard (bookings, profile)
+│   ├── cars/              # Car catalog & detail pages
+│   ├── login/             # Authentication pages
+│   ├── register/
+│   ├── about/
+│   ├── contact/
+│   └── api/               # API routes (NextAuth)
+├── prisma/
+│   ├── schema.prisma      # Database schema
+│   ├── seed.ts            # Seed data
+│   └── migrations/
+├── public/
+│   └── images/            # Static assets
+└── __tests__/             # Unit & component tests
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Features
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Dark / Light theme** with smooth transitions and persistent preference
+- **Car catalog** with search, category filter and price sorting
+- **Car detail page** with image gallery and specifications
+- **Booking modal** with two-month calendar and time slot picker
+- **User dashboard** — view and manage bookings
+- **Admin panel** — manage cars and bookings
+- **Authentication** — register / login with hashed passwords
+- **Responsive design** — mobile-friendly across all pages
+
+---
+
+## Environment Variables
+
+Create a `.env.local` file in the project root:
+
+```env
+DATABASE_URL="postgresql://user:password@host:5432/dbname"
+AUTH_SECRET="your-nextauth-secret"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+---
+
+## Database Setup
+
+```bash
+# Generate Prisma client
+pnpm prisma generate
+
+# Run migrations
+pnpm prisma migrate deploy
+
+# Seed the database with sample cars and a test user
+pnpm prisma db seed
+```
+
+---
+
+## Running Tests
+
+```bash
+# Run all tests
+pnpm test
+
+# Run with coverage report
+pnpm test:coverage
+```
+
+---
+
+## Deployment
+
+The app is configured for deployment on **Vercel**.
+
+1. Push to GitHub
+2. Import the repository in [Vercel](https://vercel.com)
+3. Add the environment variables in the Vercel dashboard
+4. Deploy
+
+Build command used by Vercel:
+```bash
+prisma generate && next build
+```

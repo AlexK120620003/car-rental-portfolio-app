@@ -3,65 +3,93 @@ import { redirect } from 'next/navigation';
 import prisma from '@/app/lib/prisma';
 import { updatePassword, updateUserName } from '@/app/lib/actions';
 
+const inputClass =
+  'w-full rounded-xl border border-border bg-surface-alt px-4 py-2.5 text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none transition-colors';
+const labelClass = 'block mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted';
+const cardClass = 'rounded-2xl border border-border bg-surface p-6 mb-5';
+
 export default async function Profile() {
   const session = await auth();
   if (!session) redirect('/login');
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.user?.id },
-  });
+  const user = await prisma.user.findUnique({ where: { id: session.user?.id } });
   if (!user) redirect('/login');
 
-  return (
-    <section className='p-8'>
-      <h1 className='mb-8 text-2xl font-bold text-white'>Profile</h1>
+  const initials = user.name
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
 
-      <div className='max-w-md space-y-6'>
-        <div className='rounded-xl border border-zinc-800 bg-zinc-900 p-6'>
-          <h2 className='mb-4 text-sm font-semibold uppercase tracking-wider text-zinc-400'>
-            Display Name
-          </h2>
-          <form action={updateUserName} className='flex gap-3'>
+  return (
+    <div className='max-w-lg'>
+      <h1 className='text-2xl font-extrabold text-foreground mb-1'>Profile</h1>
+      <p className='text-sm text-muted mb-8'>Manage your account settings</p>
+
+      {/* Avatar card */}
+      <div className={cardClass}>
+        <div className='flex items-center gap-4 mb-6'>
+          <div className='flex h-14 w-14 items-center justify-center rounded-2xl bg-accent text-lg font-extrabold text-white shrink-0'>
+            {initials}
+          </div>
+          <div>
+            <p className='font-semibold text-foreground'>{user.name}</p>
+            <p className='text-sm text-muted'>{user.email}</p>
+          </div>
+        </div>
+
+        <form action={updateUserName} className='flex gap-3'>
+          <div className='flex-1'>
+            <label htmlFor='name' className={labelClass}>Display Name</label>
             <input
+              id='name'
               name='name'
               defaultValue={user.name}
-              className='flex-1 rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm text-white placeholder-zinc-500 focus:border-orange-500 focus:outline-none'
+              className={inputClass}
             />
-            <button
-              type='submit'
-              className='rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-orange-600'
-            >
-              Save
-            </button>
-          </form>
-        </div>
+          </div>
+          <button
+            type='submit'
+            className='self-end rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90'
+          >
+            Save
+          </button>
+        </form>
+      </div>
 
-        <div className='rounded-xl border border-zinc-800 bg-zinc-900 p-6'>
-          <h2 className='mb-4 text-sm font-semibold uppercase tracking-wider text-zinc-400'>
-            Change Password
-          </h2>
-          <form action={updatePassword} className='space-y-3'>
+      {/* Password card */}
+      <div className={cardClass}>
+        <h2 className='text-sm font-bold text-foreground mb-5'>Change Password</h2>
+        <form action={updatePassword} className='flex flex-col gap-4'>
+          <div>
+            <label htmlFor='currentPassword' className={labelClass}>Current Password</label>
             <input
+              id='currentPassword'
               name='currentPassword'
               type='password'
-              placeholder='Current password'
-              className='w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm text-white placeholder-zinc-500 focus:border-orange-500 focus:outline-none'
+              placeholder='••••••••'
+              className={inputClass}
             />
+          </div>
+          <div>
+            <label htmlFor='newPassword' className={labelClass}>New Password</label>
             <input
+              id='newPassword'
               name='newPassword'
               type='password'
-              placeholder='New password'
-              className='w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm text-white placeholder-zinc-500 focus:border-orange-500 focus:outline-none'
+              placeholder='••••••••'
+              className={inputClass}
             />
-            <button
-              type='submit'
-              className='w-full rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-orange-600'
-            >
-              Update password
-            </button>
-          </form>
-        </div>
+          </div>
+          <button
+            type='submit'
+            className='w-full rounded-xl bg-accent py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90'
+          >
+            Update Password
+          </button>
+        </form>
       </div>
-    </section>
+    </div>
   );
 }

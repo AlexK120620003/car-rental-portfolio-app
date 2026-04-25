@@ -6,44 +6,45 @@ vi.mock('../app/lib/actions', () => ({
   createBooking: vi.fn(),
 }));
 
+const DEFAULT_PROPS = {
+  pricePerDay: 80,
+  carId: 'car-1',
+  carBrand: 'Lamborghini',
+  carModel: 'Huracan',
+  carImage: 'https://example.com/car.jpg',
+};
+
 describe('BookingCalculator', () => {
   it('renders Book This Car heading', () => {
-    render(<BookingCalculator pricePerDay={80} carId='car-1' />);
+    render(<BookingCalculator {...DEFAULT_PROPS} />);
     expect(screen.getByText('Book This Car')).toBeInTheDocument();
   });
 
-  it('renders month navigation buttons', () => {
-    render(<BookingCalculator pricePerDay={80} carId='car-1' />);
-    expect(screen.getByText('<')).toBeInTheDocument();
-    expect(screen.getByText('>')).toBeInTheDocument();
+  it('renders the price per day', () => {
+    render(<BookingCalculator {...DEFAULT_PROPS} />);
+    expect(screen.getByText('$80')).toBeInTheDocument();
   });
 
-  it('renders day headers', () => {
-    render(<BookingCalculator pricePerDay={80} carId='car-1' />);
-    expect(screen.getByText('Mon')).toBeInTheDocument();
-    expect(screen.getByText('Sat')).toBeInTheDocument();
+  it('renders the Select Dates & Book button', () => {
+    render(<BookingCalculator {...DEFAULT_PROPS} />);
+    expect(screen.getByText('Select Dates & Book')).toBeInTheDocument();
   });
 
-  it('Book Now button is disabled when no dates selected', () => {
-    render(<BookingCalculator pricePerDay={80} carId='car-1' />);
+  it('opens the booking modal when button is clicked', () => {
+    render(<BookingCalculator {...DEFAULT_PROPS} />);
+    fireEvent.click(screen.getByText('Select Dates & Book'));
+    expect(screen.getByText('Your ride')).toBeInTheDocument();
+  });
+
+  it('modal shows car brand and model', () => {
+    render(<BookingCalculator {...DEFAULT_PROPS} />);
+    fireEvent.click(screen.getByText('Select Dates & Book'));
+    expect(screen.getByText('Lamborghini Huracan')).toBeInTheDocument();
+  });
+
+  it('Book Now button in modal is disabled when no dates selected', () => {
+    render(<BookingCalculator {...DEFAULT_PROPS} />);
+    fireEvent.click(screen.getByText('Select Dates & Book'));
     expect(screen.getByText('Book Now')).toBeDisabled();
-  });
-
-  it('navigates to next month on > click', () => {
-    render(<BookingCalculator pricePerDay={80} carId='car-1' />);
-    const before = screen.getByText(/\w+ \d{4}/).textContent;
-    fireEvent.click(screen.getByText('>'));
-    const after = screen.getByText(/\w+ \d{4}/).textContent;
-    expect(after).not.toBe(before);
-  });
-
-  it('enables Book Now after selecting start and end date', () => {
-    render(<BookingCalculator pricePerDay={100} carId='car-1' />);
-    const dayBtns = screen
-      .getAllByRole('button')
-      .filter(btn => /^\d+$/.test(btn.textContent ?? ''));
-    fireEvent.click(dayBtns[0]);
-    fireEvent.click(dayBtns[5]);
-    expect(screen.getByText('Book Now')).not.toBeDisabled();
   });
 });
