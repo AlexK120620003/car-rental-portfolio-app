@@ -18,7 +18,7 @@ describe('CategoryFilter', () => {
 
   it('renders all category buttons', () => {
     render(<CategoryFilter />);
-    Object.values(Category).forEach(cat => {
+    Object.values(Category).forEach((cat: string) => {
       expect(screen.getByText(cat)).toBeInTheDocument();
     });
   });
@@ -34,7 +34,7 @@ describe('CategoryFilter', () => {
 
   it('highlights the active category', () => {
     render(<CategoryFilter activeCategory={Category.SUV} />);
-    const btn = screen.getByText(Category.SUV);
+    const btn = screen.getByText(Category.SUV) as HTMLElement;
     expect(btn.className).toContain('bg-accent');
   });
 });
