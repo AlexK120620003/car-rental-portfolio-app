@@ -1,29 +1,14 @@
 'use client';
 import { useState } from 'react';
 import { createBooking } from '../lib/actions';
-
+import {
+  getDaysInMonth,
+  calculateTotalDays,
+  calculateTotalPrice,
+} from '../lib/unit';
 interface BookingCalculatorProps {
   pricePerDay: number;
   carId: string;
-}
-
-function getDaysInMonth(date: Date): (Date | null)[] {
-  const year = date.getFullYear();
-  const month = date.getMonth();
-
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-
-  const day: (Date | null)[] = [];
-
-  for (let i = 0; i < firstDay.getDay(); i++) {
-    day.push(null);
-  }
-
-  for (let d = 1; d <= lastDay.getDate(); d++) {
-    day.push(new Date(year, month, d));
-  }
-  return day;
 }
 
 export default function BookingCalculator({
@@ -38,14 +23,8 @@ export default function BookingCalculator({
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [hoverDate, setHoverDate] = useState<Date | null>(null);
   const days = getDaysInMonth(currentMonth);
-  const totalDays =
-    startDate && endDate
-      ? Math.ceil(
-          (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
-        )
-      : 0;
-
-  const totalPrice = totalDays > 0 ? totalDays * pricePerDay : 0;
+  const totalDays = calculateTotalDays(startDate, endDate);
+  const totalPrice = calculateTotalPrice(totalDays, pricePerDay);
 
   function handleDateClick(day: Date) {
     if (!startDate || (startDate && endDate)) {
