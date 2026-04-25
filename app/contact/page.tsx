@@ -18,7 +18,7 @@ export default function ContactPage() {
             Contact Us
           </h1>
           <p className='mt-4 text-muted'>
-            Have a question or need help? Send us a message and we'll get back
+            Have a question or need help? Send us a message and we&apos;ll get back
             to you as soon as possible.
           </p>
         </div>

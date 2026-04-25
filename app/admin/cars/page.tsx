@@ -1,5 +1,6 @@
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 import prisma from '@/app/lib/prisma';
 import { deleteCar } from '@/app/lib/actions';
 
@@ -12,12 +13,12 @@ export default async function AdminCarsPage() {
     <div>
       <div className='mb-6 flex items-center justify-between'>
         <h1 className='text-2xl font-bold text-white'>Cars</h1>
-        <a
+        <Link
           href='/admin/cars/new'
           className='rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white hover:bg-orange-600'
         >
           Add Car
-        </a>
+        </Link>
       </div>
       <div className='rounded-xl border border-zinc-800 bg-zinc-900'>
         <table className='w-full text-sm'>
